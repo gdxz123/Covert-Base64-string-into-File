@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Covert Base64 string to file</title>
+	<style type="text/css">
+		#base64InputTextArea {
+			width: 600px;
+			height: 200px;
+		}
+		.msgInput {
+			width: 300px;
+			display:block
+		}
+	</style>
+</head>
+<body>
+	<h1>Covert Base64 string into File</h1>
+	<textarea id="base64InputTextArea" placeholder="please input base64 string"></textarea>
+	<br>
+	<input type="text" id="typeInput" class="msgInput" placeholder="input type, like: data:audio/mp3">
+	<br>
+	<input type="text" id="fileNameInput" class="msgInput" placeholder="input download name, like: 1.mp3">
+	<br>
+	<button onclick="covertBase64ToFile()">covert base64 string to file</button>
+	<br>
+	<br>
+	<a href="" id ="downloadButton">download file</a>
+	<script type="text/javascript">
+		function base64ToArrayBuffer(base64) {
+			var binaryString = window.atob(base64)
+			var length = binaryString.length
+			var bytes = new Uint8Array(length)
+			for (var i = 0; i < length; i++) {
+				bytes[i] = binaryString.charCodeAt(i)
+			}
+			return bytes.buffer
+		}
+
+		function addDownloadContent(text, name, type) {
+			var downloadButton = document.getElementById("downloadButton");
+  			var file = new Blob([text], {type: type});
+  			downloadButton.href = URL.createObjectURL(file);
+  			downloadButton.download = name;
+		}
+
+		function covertBase64ToFile() {
+			var textArea = document.getElementById("base64InputTextArea")
+			var base64String = textArea.value
+			if (base64String.length <= 0) {
+				alert("please input base64 string")
+				return false
+			}
+			var typeInput = document.getElementById("typeInput")
+			var type = typeInput.value
+			if (type.length <= 0) {
+				alert("please input data type")
+				return false
+			}
+			var fileNameInput = document.getElementById("fileNameInput")
+			var fileName = fileNameInput.value
+			if (fileName.length <= 0) {
+				alert("please input file name")
+				return false
+			}
+			var bytes = base64ToArrayBuffer(base64String)
+			console.log(bytes)
+			addDownloadContent(bytes, fileName, typeInput)
+			return true
+		}
+
+	</script>
+
+
+</body>
+</html>
